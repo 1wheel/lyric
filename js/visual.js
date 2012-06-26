@@ -12,8 +12,8 @@ var context = "";
 var lyrics;
 var lastTrack;
 
-var Xmax = 600;
-var Ymax = 600;
+var Xmax = window.innerWidth*.7;
+var Ymax = window.innerHeight*.7;
 var MousePressed = false;
 
 var PI;  //proccessing instance
@@ -26,8 +26,8 @@ function init() {
 	fetchLyrics(player.track.data);
 	zzz= player.track.data;
 	updateFrame();
-}
-
+}	
+	
 function updateFrame() {
 	if (PI){
 		displayLyrics();

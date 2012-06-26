@@ -6,7 +6,9 @@ var offset; 			//how much of a buffer to give
 var CL; 				//current line - line of lyrics currently being displayed
 var CK; 				//currently key
 
-var savelog;
+var lineSpeed = [];			//array of WPM rate at each typed line
+lineSpeed[0] = 0;
+var linesTyped = 0;		//number of lines typed so far	
 var lineFinished = false;
 
 function makeLyrics() {	
@@ -61,6 +63,9 @@ function compareToNext(key) {
 
 function findCPM() {
 	position = sp.trackPlayer.getNowPlayingTrack().position;
+	linesTyped ++;
+	lineSpeed[linesTyped] = Math.max(CPM*3600*5.5,200);
+
 	return (CK/(position - lyricTiming[CL]));
 }
 
@@ -76,7 +81,6 @@ function findNewOffset(nextCL) {
 		i++;
 	}
 	offset = i;
-	
 	CK = 0;
 	lineFinished = false;
 }
@@ -98,14 +102,15 @@ function displayLyrics() {
 		}
 		var scale = (position-lyricTiming[CL])/(lyricTiming[CL+1+offset] - lyricTiming[CL]);
 		PI.fill(255,10,10);
-		PI.text(lyricLines[CL],50,500*scale,400,100) ;
+		PI.text(lyricLines[CL],.05*Xmax,.8*Ymax*scale + .1*Ymax,.8*Xmax,100) ;
 		if (CK > 0)
 		{
 			PI.fill(10,255,10);
-			PI.text(lyricLines[CL].slice(0,CK),50,500*scale,400,100) ;
+			PI.text(lyricLines[CL].slice(0,CK),.05*Xmax,.8*Ymax*scale + .1*Ymax,.8*Xmax,100) ;
 		}
 		PI.fill(1,1,1);
-		PI.text(CPM*3600*6,500,100);
+		PI.text("WPM " + Math.round(CPM*3600*5.5),.05*Xmax,.05*Ymax);
+		PI.text("Score " + Math.round(lineSpeed.sum()),.65*Xmax,.05*Ymax)
 		info(scale);
 		
 	}

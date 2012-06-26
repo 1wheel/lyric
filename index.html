@@ -17,17 +17,13 @@
 		
 		<p id="xcord"> x cord </p>		
 		<p id="ycord"> y cord </p>
-		<input type="text" class="input" id="box" />
-		<p id = "hi">Hello</p>
 		
-		<form action="http://www.htmlcodes.me/textboxes/thankyou.cfm">
-			<textarea rows="5" cols="20" name="textbox_message" readonly="readonly">
-				This is a readonly textbox. Try changing the value...
-			</textarea>
-			<br />
-			<input type="submit" />
+		<form onclick="player.playing = true" >
+			<textarea name="textbox_message" readonly="readonly">Click to play!</textarea>
 		</form>
 		
+		<p id = "hi">Hello</p>
+
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/processing.js"></script>
 		<script type="text/javascript" src="js/jquery.json-2.3.js"></script>
