@@ -64,7 +64,7 @@ function compareToNext(key) {
 function findCPM() {
 	position = sp.trackPlayer.getNowPlayingTrack().position;
 	linesTyped ++;
-	lineSpeed[linesTyped] = Math.max(CPM*3600*5.5,200);
+	lineSpeed[linesTyped] = Math.min(CPM*3600*5.5,200);
 
 	return (CK/(position - lyricTiming[CL]));
 }
