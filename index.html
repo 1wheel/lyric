@@ -1,23 +1,32 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Playlister</title>
+		<title>dB Graph</title>
 		<link rel="stylesheet" href="sp://import/css/adam.css">
-		<link rel="stylesheet" href="styles.css">
+		<link rel="stylesheet" href="tutorial.css">
 	</head>
 	
+	
 	<body>
-		<h2 id='title'> Echo Nest / Spotify Demonstration </h2>
+		<h2 id='title'> Type the Lyrics </h2>
 		<div id="info"> </div>
-		<button id="new" onclick="changeContext('Playlist')"> Generate Playlist </button>
-		<button id="getmoreinfo" onclick="changeContext('RealTimeAnalysis')"> Real Time Analysis </button>	
-		<button id="buttonclear" onclick="changeContext('Cleared')"> Clear</button>	
-		<button id="buttonclear" onclick="changeContext('Graph')"> Graph</button>
+		
 		<div id ="reset-able"></div>
 		<canvas id = "sketch" data-processing-sources="hello2.pde"></canvas>
 		
 		<p id="xcord"> x cord </p>		
 		<p id="ycord"> y cord </p>
+		<input type="text" class="input" id="box" />
+		<p id = "hi">Hello</p>
+		
+		<form action="http://www.htmlcodes.me/textboxes/thankyou.cfm">
+			<textarea rows="5" cols="20" name="textbox_message" readonly="readonly">
+				This is a readonly textbox. Try changing the value...
+			</textarea>
+			<br />
+			<input type="submit" />
+		</form>
 		
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/processing.js"></script>
@@ -26,6 +35,7 @@
 		<script type="text/javascript" src="js/FetchTrackAndAnalysisData.js"></script>
 		<script type="text/javascript" src="js/playlister.js"></script>
 		<script type="text/javascript" src="js/graph.js"></script>
+		<script type="text/javascript" src="js/lyric.js"></script>
 		<script type="text/javascript" src="js/visual.js"></script>
 		
 	</body>

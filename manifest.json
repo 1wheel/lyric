@@ -1,16 +1,22 @@
 {
 	"BundleType": "Application",
+	"BundleIdentifier": "lyric",
 	"AppIcon": {
-		"18x18": "icon.png"
+		"36x18": "icon.png"
 	},
 	"AppName": {
-		"en": "Visual"
+		"en": "LyricGame"
 	},
 	"SupportedLanguages": [
 		"en"
 	],
-
-	"RequiredPermissions": [
-		"http://*.echonest.com"
-	]
+    "RequiredPermissions": [
+        "http://*.echonest.com",
+        "http://*.tunewiki.com",
+        "http://*.tunewiki.com"
+    ],
+    "VendorIdentifier": [
+        "adamtownusa"
+    ]
+	
 }

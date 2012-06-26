@@ -23,9 +23,21 @@ function fetchAnalysis(track) {
         if ('meta' in data) {
             info("Got the analysis");
             cur_analysis = data;
+			fetchLyrics(track);
         } else {
             info("trouble getting analysis");
         }
+    });
+}
+
+function fetchLyrics(track) {
+	info('Getting lyrics for ' + track.title + ' by ' + track.artist);
+	var url ='http://api.tunewiki.com/smp/v2/getLyric?device=900&spotifytok=aa3bf3c2a701acce2558679fea4ff12a&callback=?';
+    $.getJSON(url, {'json':'true','artist':track.artists[0].name,'album':track.album.name,
+		'title':track.name}, function (ldata) {
+
+            info("Got the lyrics");
+            lyrics = ldata;
     });
 }
 

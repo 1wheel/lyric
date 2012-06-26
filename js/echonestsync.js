@@ -72,10 +72,6 @@ function showSegmentInfo() {
         if (t) {
 			var time = t.position/1000;
             var thisTrack = t.track;
-            if (lastTrack == null || lastTrack.uri != thisTrack.uri) {
-                lastTrack = thisTrack;
-                fetchSongInfo(thisTrack);
-            }
             seg = findNextSegment(time)
             if (seg) {
 				seg.beat = findNextBeat(time);

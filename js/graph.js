@@ -23,46 +23,48 @@
 	var arrayLength;
 		
 	function makeLoudness(){	
-		
-		var segmentArrary = cur_analysis.segments;
-		arrayLength = segmentArrary.length;
-		
-		var bi = 0;
-		var tempbeat = cur_analysis.beats[bi];
-		for (var i = 0; i < arrayLength; i++) {		
-			if (cur_analysis.track.end_of_fade_in < segmentArrary[i].start && segmentArrary[i].start < cur_analysis.track.start_of_fade_out){
-				magA[magA.length] = segmentArrary[i].loudness_max; 
-				timeA[timeA.length] = segmentArrary[i].start;
-				console.log = cur_analysis;
-				while (i > 0 && bi < cur_analysis.beats.length && tempbeat.start < segmentArrary[i].start){
-					console.log = i;
-					tempbeat = cur_analysis.beats[bi++];
+		magA = [];
+		if (cur_analysis) {
+			var segmentArrary = cur_analysis.segments;
+			arrayLength = segmentArrary.length;
+			
+			var bi = 0;
+			var tempbeat = cur_analysis.beats[bi];
+			for (var i = 0; i < arrayLength; i++) {		
+				if (cur_analysis.track.end_of_fade_in < segmentArrary[i].start && segmentArrary[i].start < cur_analysis.track.start_of_fade_out){
+					magA[magA.length] = segmentArrary[i].loudness_max; 
+					timeA[timeA.length] = segmentArrary[i].start;
+					console.log = cur_analysis;
+					while (i > 0 && bi < cur_analysis.beats.length && tempbeat.start < segmentArrary[i].start){
+						console.log = i;
+						tempbeat = cur_analysis.beats[bi++];
+					}
+					bpmA[bpmA.length] = 60/tempbeat.duration;
+					bpmAC[bpmAC.length] = tempbeat.confidence;
 				}
-				bpmA[bpmA.length] = 60/tempbeat.duration;
-				bpmAC[bpmAC.length] = tempbeat.confidence;
 			}
-		}
-		
-		maxM = Math.max.apply(Math, magA);
-		minM = Math.min.apply(Math, magA);
-		maxT = Math.max.apply(Math, timeA);
-		minT = Math.min.apply(Math, timeA);
-		maxB = bpmA.sum()/arrayLength + 10;
-		minB = bpmA.sum()/arrayLength - 10;
+			
+			maxM = Math.max.apply(Math, magA);
+			minM = Math.min.apply(Math, magA);
+			maxT = Math.max.apply(Math, timeA);
+			minT = Math.min.apply(Math, timeA);
+			maxB = bpmA.sum()/arrayLength + 10;
+			minB = bpmA.sum()/arrayLength - 10;
 
-		arrayLength = magA.length;
-		for (var i = 0; i < arrayLength; i++) {		
-			magAm[i] = Xmax-(magA[i]-minM)*(Ymax-0)/(maxM-minM); 
-			timeAm[i] = (timeA[i]-minT)*(Xmax-0)/(maxT-minT); 
-			bpmAm[i] = Xmax-(bpmA[i]-minB)*(Ymax-0)/(maxB-minB)
-		}
+			arrayLength = magA.length;
+			for (var i = 0; i < arrayLength; i++) {		
+				magAm[i] = Xmax-(magA[i]-minM)*(Ymax-0)/(maxM-minM); 
+				timeAm[i] = (timeA[i]-minT)*(Xmax-0)/(maxT-minT); 
+				bpmAm[i] = Xmax-(bpmA[i]-minB)*(Ymax-0)/(maxB-minB)
+			}
 
-		smoothCurves();
-		MousePressed = false;
+			smoothCurves();
+			MousePressed = false;
+		}
 	}
 		
 	function drawLoudness(){
-		if (magA.length==0){
+		while (magA.length==0){
 			makeLoudness();
 		}
 			

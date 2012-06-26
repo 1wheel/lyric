@@ -76,7 +76,7 @@ function checkResponse(data) {
 	if (data.response) {
 		if (data.response.status.code != 0) {
 			error("Whoops... Unexpected error from server. " + data.response.status.message);
-			log(JSON.stringify(data.response));
+			console.log(JSON.stringify(data.response));
 			} else {
 			return true;
 		}
