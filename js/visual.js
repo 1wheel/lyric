@@ -3,6 +3,7 @@ jQuery.ajaxSettings.traditional = true;
 var sp = getSpotifyApi(1);
 var models = sp.require("sp://import/scripts/api/models");
 var player = models.player;
+var CurrentLyrics;
 
 var cur_analysis;
 var getCurrentSeg;
@@ -11,30 +12,45 @@ var currentSeg;
 var context = "";
 var lyrics;
 var lastTrack;
+var resetCurrentLyrics = false;
 
-var Xmax = window.innerWidth*.7;
-var Ymax = window.innerHeight*.7;
+var Xmax = window.innerWidth*.8;
+var Ymax = window.innerHeight*.8;
 var MousePressed = false;
 
 var PI;  //proccessing instance
 
 var lyricsReady = false;
 
-var zzz;
 function init() {
 	info("trouble getting results");		
 	fetchLyrics(player.track.data);
-	zzz= player.track.data;
 	updateFrame();
 }	
-	
+
 function updateFrame() {
-	if (PI){
-		displayLyrics();
+	if (resetCurrentLyrics) {
+		CurrentLyrics = null;
+		resetCurrentLyrics = false;
 	}
+	if (PI) {
+		if (CurrentLyrics) {	
+			CurrentLyrics.displayLyrics();
+			document.getElementById('xcord').innerHTML = player.position;
+
+		}
+		else {
+			if (lyrics) {
+				savelyrics = lyrics;
+				CurrentLyrics = new createSongLyrics(lyrics);
+			}
+		}
+	}
+		
 	else {
 		PI = Processing.getInstanceById('sketch');
 	}
+	
 	setTimeout("updateFrame()",20);
 }
 
@@ -42,14 +58,17 @@ $(window).bind('keypress', function(e) {
 	saveKey = e;
     var code = (e.keyCode ? e.keyCode : e.which);
 	document.getElementById('hi').innerHTML = String.fromCharCode(e.charCode);
-	compareToNext(String.fromCharCode(e.charCode));
+	if(CurrentLyrics){
+		CurrentLyrics.compareToNext(String.fromCharCode(e.charCode));
+	}
 });
 
 player.observe(models.EVENT.CHANGE, function (event) {
 	if (event.data.curtrack == true) {
+		lyrics = null;
+		resetCurrentLyrics = true;
 		fetchLyrics(player.track.data);
-		lyricsReady = false;
-		//alert("song change");
+		alert("song change");
 	}
 }); 
 
