@@ -54,6 +54,7 @@ function updateFrame() {
 	setTimeout("updateFrame()",20);
 }
 
+//event listener for keypress. sends them to CurrentLyrics if it exists
 $(window).bind('keypress', function(e) {
 	saveKey = e;
     var code = (e.keyCode ? e.keyCode : e.which);
@@ -68,9 +69,11 @@ player.observe(models.EVENT.CHANGE, function (event) {
 		lyrics = null;
 		resetCurrentLyrics = true;
 		fetchLyrics(player.track.data);
-		alert("song change");
-	}
-}); 
+		if (CurrentLyrics && CurrentLyrics.validScore) {
+			info("saved score");
+			localStorage.setItem(CurrentLyrics.songID, Math.round(CurrentLyrics.lineSpeed.sum()));
+		}
+}});
 
 
 Array.max = function( array ){

@@ -1,6 +1,8 @@
 function createSongLyrics(passedLyrics){
 	this.lyrics = passedLyrics;
-	
+	this.songID = player.track.uri;
+	this.validScore = true;
+	this.HighScore = localStorage.getItem(this.songID);
 	//if tunewiki data has timings, modifys data structure and formating
 	
 	if (this.lyrics.response.lyric.line){
@@ -27,8 +29,9 @@ function createSongLyrics(passedLyrics){
 		PI.textFont(PI.loadFont("Meta-Bold.ttf"), 24);
 		PI.fill(1);
 		//PI.textMode("SCREEN");
-		this.lyricsReady = true;
-		this.lineFinished = false;
+		if (lyricTiming) {
+			this.lyricsReady = true;	//program ready to display lyrics
+		}
 	}
 	else {
 		info("no lyrics for this song avabilble");
@@ -98,7 +101,8 @@ function createSongLyrics(passedLyrics){
 		}
 		PI.fill(1,1,1);
 		PI.text("WPM " + Math.round(this.CPM*3600*5.5),.05*Xmax,.05*Ymax);
-		PI.text("Score " + Math.round(this.lineSpeed.sum()),.65*Xmax,.05*Ymax)
+		PI.text("High Score " + this.HighScore,.45*Xmax,.05*Ymax)
+		PI.text("Score " + Math.round(this.lineSpeed.sum()),.75*Xmax,.05*Ymax)
 		info(this.linesTyped);		
 	}
 	
