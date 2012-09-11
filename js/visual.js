@@ -1,43 +1,38 @@
 jQuery.ajaxSettings.traditional = true;  
 
+//spotify API objects
 var sp = getSpotifyApi(1);
 var models = sp.require("sp://import/scripts/api/models");
 var player = models.player;
-var CurrentLyrics;
 
-var cur_analysis;
-var getCurrentSeg;
-var drawLoudness;
-var currentSeg;
-var context = "";
-var lyrics;
-var lastTrack;
-var resetCurrentLyrics = false;
+var lyrics;							//JSON data from tunewiki
+var CurrentLyrics;					//object created for each song. contains lyric info and method to write to screen during updateFrame
+var resetCurrentLyrics = false;		//event listener sets to false when track changes. if true, updateFrame will create a new CurrentLyrics object
+var lyricsReady = false;			//
 
-var Xmax = window.innerWidth*.8;
-var Ymax = window.innerHeight*.8;
+var canvas;
+var CC;								//canvas context
+var xMax = window.innerWidth*.8;	//size of 
+var yMax = window.innerHeight*.8;
+
 var MousePressed = false;
-
-var PI;  //proccessing instance
-
-var lyricsReady = false;
 
 function init() {
 	info("trouble getting results");		
 	fetchLyrics(player.track.data);
 	updateFrame();
 }	
-
 function updateFrame() {
 	if (resetCurrentLyrics) {
 		CurrentLyrics = null;
 		resetCurrentLyrics = false;
 	}
-	if (PI) {
+	if (CC) {
 		if (CurrentLyrics) {	
-			CurrentLyrics.displayLyrics();
-			document.getElementById('xcord').innerHTML = player.position;
-
+			if (CurrentLyrics.lyricsReady) {
+				CurrentLyrics.displayLyrics();
+				document.getElementById('xcord').innerHTML = player.position;
+			}
 		}
 		else {
 			if (lyrics) {
@@ -46,9 +41,11 @@ function updateFrame() {
 			}
 		}
 	}
-		
 	else {
-		PI = Processing.getInstanceById('sketch');
+		canvas = document.getElementById("canvas");
+		canvas.width = xMax;
+		canvas.height = yMax;
+		CC = canvas.getContext("2d"); 
 	}
 	
 	setTimeout("updateFrame()",20);
@@ -59,7 +56,7 @@ $(window).bind('keypress', function(e) {
 	saveKey = e;
     var code = (e.keyCode ? e.keyCode : e.which);
 	document.getElementById('hi').innerHTML = String.fromCharCode(e.charCode);
-	if(CurrentLyrics){
+	if(CurrentLyrics && CurrentLyrics.lyricsReady){
 		CurrentLyrics.compareToNext(String.fromCharCode(e.charCode));
 	}
 });

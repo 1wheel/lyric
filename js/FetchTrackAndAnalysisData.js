@@ -32,7 +32,7 @@ function fetchAnalysis(track) {
 
 function fetchLyrics(track) {
 	info('Getting lyrics for ' + track.title + ' by ' + track.artist);
-	var url ='http://api.tunewiki.com/smp/v2/getLyric?device=900&spotifytok=aa3bf3c2a701acce2558679fea4ff12a&callback=?';
+	var url ='http://api.tunewiki.com/smp/v2/getLyric?device=900&spotifytok=3a09d705db235ba7b8b708876132ce3b';
     $.getJSON(url, {'json':'true','artist':track.artists[0].name,'album':track.album.name,
 		'title':track.name}, function (ldata) {
 
