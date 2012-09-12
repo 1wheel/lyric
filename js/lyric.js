@@ -1,10 +1,11 @@
 function createSongLyrics(passedLyrics){
 	this.lyrics = passedLyrics;								//object returned from tunewiki
 	this.songID = player.track.uri;							//saves spotify URI to look up and save high score
+	this.songName = player.track.name;						//saves name of song
 	this.validScore = true;									//set to false if song is rewond
-	this.HighScore = localStorage.getItem(this.songID);		//loads local high score
-	if (!this.HighScore) {
-		this.HighScore = 0;
+	this.highScore = localStorage.getItem(this.songID);		//loads local high score
+	if (!this.highScore) {
+		this.highScore = 0;
 	}
 	this.lyricsReady = false;								//song loaded correctly and can be displayed
 	this.clear = Object;
@@ -12,6 +13,8 @@ function createSongLyrics(passedLyrics){
 	this.clear.height = 0;
 	this.lineBreaks = [];
 
+	console.log("making lyrics for " + this.lyrics.response.title.value + " while "
+		 + this.songName + " is playing");
 
 	//if tunewiki data has timings, modifys data structure and formating
 	if (this.lyrics.response.lyric.line){
@@ -96,7 +99,7 @@ function createSongLyrics(passedLyrics){
 		var scoreString = "";
 		
 		//this.lineSpeed[1] = 0;
-		scoreString += "High Score " + this.HighScore;
+		scoreString += "High Score " + this.highScore;
 		scoreString += "    " + "Score " + Math.round(this.lineSpeed.sum());
 		scoreString += "      "  +"WPM " + Math.round(this.CPM*3600*5.5);
 		CC.fillText(scoreString,.05*xMax,.05*yMax);
@@ -130,6 +133,7 @@ function createSongLyrics(passedLyrics){
 		else {
 			CC.clearRect(0, this.clear.yCord, xMax, this.clear.height);
 		}
+
 		//using current position, finds line currently being played
 		timePosition = sp.trackPlayer.getNowPlayingTrack().position;		
 		var temp;
@@ -182,10 +186,10 @@ function createSongLyrics(passedLyrics){
 	//decrypts tunewiki timing values
 	function getTiming(a){var c=function(c){for(var b="",a=c.length-1;a>=0;a--)b+=c.charAt(a);return b};if(a=="")return"0";var b;a=c(a);b=parseInt(a.substring(a.length-1,a.length));a=a.substring(0,a.length-1);a=a.substring(0,b)+c(a.substring(b+b,a.length));a=parseInt(a)/b+"";if(a=="NaN")a="0";return a}
 	
+	CC.clearRect(0, 0, xMax, yMax);
 	//draws score  and finds linebreak first time song is loaded
 	if (this.lyricsReady){
 		this.drawScore();
 		this.findLineBreak(this.lyricLines[this.CL]);
 	}
-
 }
