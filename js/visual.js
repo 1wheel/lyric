@@ -37,23 +37,40 @@
 //             lyrics = ldata;
 //     });
 // }
-var delta;
-var newTime;
-var oldTime = new Date().getTime();
 var startTime = new Date().getTime();
+var oldTime = new Date().getTime();
+console.log("started");
 
 function updateFrame() {
-	newTime = new Date().getTime();
-	delta = newTime - oldTime;
-	if (delta>500 ) {
-		console.log(delta + " @ " + Math.round((newTime-startTime)/1000) + " seconds");
+	var delta;
+	var newTime;
+	var oldTimeLoop = new Date().getTime();
+	var runTime = new Date().getTime();
+	for (var i = 0; oldTimeLoop < runTime + 100; i++)
+	{
+		newTimeLoop = new Date().getTime();
+		delta = newTime - oldTimeLoop;
+		if (delta>500 ) {
+			console.log("loop lag of " + delta + " milliseconds@ " + 
+				Math.round((newTime-startTime)/1000) + " seconds");
+		}				
+		oldTimeLoop = newTime;
 	}
-	oldTime = newTime;
 
-	setTimeout("updateFrame()",50);
+	delta = newTime - oldTime;
+    	if (delta>500 ) {
+			console.log("setTimeout lag of " + delta + " milliseconds@ " + 
+				Math.round((newTime-startTime)/1000) + " seconds");
+	    }
+	    oldTime = newTime;
+
+	setTimeout("updateFrame()",100);
 }
 
 updateFrame();
+
+
+
 
 	/*if (CurrentLyrics) {	
 		if (CurrentLyrics.lyricsReady) {
