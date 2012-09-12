@@ -12,8 +12,9 @@ var lyricsReady = false;			//
 
 var canvas;
 var CC;								//canvas context
-var xMax = window.innerWidth*.8;	//size of 
-var yMax = window.innerHeight*.8;
+var xMax = window.innerWidth;		//size of 
+var yMax = window.innerHeight*.75;
+var xOffSet = .08*xMax;				//space alone sides of xOffset not written over
 
 var MousePressed = false;
 
@@ -31,7 +32,6 @@ function updateFrame() {
 		if (CurrentLyrics) {	
 			if (CurrentLyrics.lyricsReady) {
 				CurrentLyrics.displayLyrics();
-				document.getElementById('xcord').innerHTML = player.position;
 			}
 		}
 		else {
@@ -48,14 +48,13 @@ function updateFrame() {
 		CC = canvas.getContext("2d"); 
 	}
 	
-	setTimeout("updateFrame()",20);
+	setTimeout("updateFrame()",50);
 }
 
 //event listener for keypress. sends them to CurrentLyrics if it exists
 $(window).bind('keypress', function(e) {
 	saveKey = e;
     var code = (e.keyCode ? e.keyCode : e.which);
-	document.getElementById('hi').innerHTML = String.fromCharCode(e.charCode);
 	if(CurrentLyrics && CurrentLyrics.lyricsReady){
 		CurrentLyrics.compareToNext(String.fromCharCode(e.charCode));
 	}

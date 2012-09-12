@@ -2,27 +2,23 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>dB Graph</title>
+		<title>Lyric Game</title>
 		<link rel="stylesheet" href="sp://import/css/adam.css">
-		<link rel="stylesheet" href="tutorial.css">
+		<link rel="stylesheet" href="styles.css">
 	</head>
 	
 	
 	<body>
-		<h2 id='title'> Type the Lyrics </h2>
-		<div id="info"> </div>
 		
-		<div id ="reset-able"></div>
 		<canvas id = "canvas" ></canvas>
-		
-		<p id="xcord"> x cord </p>		
-		<p id="ycord"> y cord </p>
-		
-		<form onclick="player.playing = true" >
-			<textarea name="textbox_message" readonly="readonly">Click to play!</textarea>
-		</form>
-		
-		<p id = "hi">Hello</p>
+				
+		<center>
+			<form onclick="player.playing = true" >
+				<textarea id = "textbox" name="textbox_message" cols="40" readonly="readonly">Click to play!</textarea>
+			</form>
+		</center>
+
+		<div id="info"> </div>
 
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/processing.js"></script>

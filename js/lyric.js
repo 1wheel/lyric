@@ -10,11 +10,12 @@ function createSongLyrics(passedLyrics){
 	this.clear = Object;
 	this.clear.yCord = .1*yMax;
 	this.clear.height = 0;
+	this.lineBreaks = [];
+
 
 	//if tunewiki data has timings, modifys data structure and formating
 	if (this.lyrics.response.lyric.line){
 		this.lyricA = this.lyrics.response.lyric.line;
-		//alert("changed!");
 		this.CK = 0;					//currently key
 		this.CL = 0;					//current line - line of lyrics currently being displayed
 		this.CPM = .06;					//Chars per milisecound
@@ -35,7 +36,7 @@ function createSongLyrics(passedLyrics){
 		}
 		this.lyricTiming.push(sp.trackPlayer.getNowPlayingTrack().length);
 
-		if (this.lyricTiming) {
+		if (this.lyricTiming.length>0 && this.lyricLines.length>0) {
 			this.lyricsReady = true;	//program ready to display lyrics only if lyrics exist
 		}
 		else {
@@ -50,8 +51,7 @@ function createSongLyrics(passedLyrics){
 	this.compareToNext = function(key){
 		if (!this.lineFinished && key == this.lyricLines[this.CL][this.CK]) {
 			if (this.CK == this.lyricLines[this.CL].length || !this.lyricLines[this.CL][this.CK+1]) {
-				this.CPM = this.findCPM();
-				this.drawScore();
+				this.lineFinishedCalc();
 				this.CK = this.lyricLines[this.CL].length;
 				this.lineFinished = true;
 			}
@@ -61,19 +61,19 @@ function createSongLyrics(passedLyrics){
 		}
 	}
 	
-	//finds typing speed. called when a line is completed, either by typing all the letter or time expiring
-	 this.findCPM = function() {
+	//finds and updates typing speed. called when a line is completed, either by typing all the letter or time expiring
+	 this.lineFinishedCalc = function() {
 		timePosition = sp.trackPlayer.getNowPlayingTrack().position;
 		this.linesTyped++;
-		this.lineSpeed[this.linesTyped] = Math.min(this.CPM*3600*5.5,200);
-		return (this.CK/(timePosition - this.lyricTiming[this.CL]));
-	}
+		this.CPM = (this.CK/(timePosition - this.lyricTiming[this.CL]));
+		this.lineSpeed[this.linesTyped] = this.CPM*3600*5.5,1000;
+		this.reDrawScore = true;
+}
 
 	//called when a line time ends. finds how many lines need to be skipped to match typing speed
 	this.findNewOffset = function (nextCL) {
 		if (!this.lineFinished) {
-			this.CPM = Math.max(this.findCPM(),.003);
-			this.drawScore();
+			this.lineFinishedCalc();
 		}	
 		if (nextCL <this.lyricTiming.length+1) {
 			this.CL = nextCL;
@@ -85,6 +85,7 @@ function createSongLyrics(passedLyrics){
 		this.offset = i;
 		this.CK = 0;
 		this.lineFinished = false;
+		this.findLineBreak(this.lyricLines[this.CL]);
 	}
 	
 	//clears board and draws scores on the top
@@ -94,19 +95,43 @@ function createSongLyrics(passedLyrics){
 		CC.fillStyle = "black";
 		var scoreString = "";
 		
+		//this.lineSpeed[1] = 0;
 		scoreString += "High Score " + this.HighScore;
 		scoreString += "    " + "Score " + Math.round(this.lineSpeed.sum());
 		scoreString += "      "  +"WPM " + Math.round(this.CPM*3600*5.5);
 		CC.fillText(scoreString,.05*xMax,.05*yMax);
 	}
 
+	//calculates where line breaks should go
+	this.findLineBreak = function(text) {
+		this.lineBreaks = [];
+		var currentLineLength = 0;
+		var currentLineNumLetters = 0;
+		var words = text.split(" ");
+		for (var i=0; i<words.length; i++){
+			currentLineLength += this.wordLength(words[i]);
+			if (currentLineLength > xMax - xOffSet - 50){
+				this.lineBreaks[currentLineNumLetters] = true;
+				currentLineLength = this.wordLength(words[i]);
+				currentLineNumLetters = 0;
+			}	
+		currentLineNumLetters += (words[i].length) + 1;
+			
+		}
+	}
+
 
 	// writes updated line positions and scores to it every 20 ms
 	this.displayLyrics = function() {
-		CC.clearRect(0, this.clear.yCord, xMax, this.clear.height);
-
-		timePosition = sp.trackPlayer.getNowPlayingTrack().position;		
+		if (this.reDrawScore){
+			this.drawScore();
+			this.reDrawScore = false;
+		}
+		else {
+			CC.clearRect(0, this.clear.yCord, xMax, this.clear.height);
+		}
 		//using current position, finds line currently being played
+		timePosition = sp.trackPlayer.getNowPlayingTrack().position;		
 		var temp;
 		for (var i = 0; this.lyricTiming[i] <= timePosition; i++)
 		{
@@ -119,51 +144,48 @@ function createSongLyrics(passedLyrics){
 		//percentage of current line's length that has been completed 
 		var scale = (timePosition-this.lyricTiming[this.CL])/(this.lyricTiming[this.CL+1+this.offset] - this.lyricTiming[this.CL]);
 
-		var letter;
-		var lineLength = .05*xMax;
+		//current line
+		var text = this.lyricLines[this.CL];
+
+		var lineLength = xOffSet;
 		var lineNum = 1;
 		for (var i = 0; i <this.lyricLines[this.CL].length; i++){
 			CC.fillStyle = "green"
 			if (i + 1 > this.CK){
-				CC.fillStyle = "red";
+				CC.fillStyle = "orange";
 			}
-			letter = this.lyricLines[this.CL][i];
-			CC.fillText(letter, lineLength, .8*yMax*scale + .05*yMax*lineNum + .07*yMax);
+
+			CC.fillText(text[i], lineLength, .8*yMax*scale + .05*yMax*lineNum + .07*yMax);
 
 			//disable clearing for cool effect
 			//CC.fillStyle = "black"
-			//CC.fillText(letter, lineLength, .8*yMax*scale + .05*yMax*lineNum + .05*yMax + 3);
+			//CC.fillText(text[i], lineLength, .8*yMax*scale + .05*yMax*lineNum + .05*yMax + 3);
 
-			lineLength += CC.measureText(letter).width;
-			if (lineLength>.95*xMax){
-				lineLength = .05*xMax;
+			lineLength += CC.measureText(text[i]).width;
+			if (this.lineBreaks[i+1]){
+				lineLength = xOffSet;
 				lineNum++;
 			}
 		}
 		this.clear.yCord =  .8*yMax*scale + .05*yMax*0 + .07*yMax;
 		this.clear.height = .05*yMax*(lineNum+1);
-
-		info(this.linesTyped);		
 	}
 	
-	this.correctLineWarp = function(displayText, CurrentLineText) {
-		i = 0;
-		displayText = displayText.split("");
-		while (CurrentLineText[i] && CurrentLineText[i] != " ") {
-			displayText[i] = ("/n");
-			i = i + 1;
+	this.wordLength = function(word) {
+		var length = 0
+		for (var i=0;i<word.length;i++){
+			length += CC.measureText(word[i]).width;
 		}
-		
-		displayText = displayText.join("");
-		displayText = "a" + "/n" + "s";
-		ST = displayText;
-		return displayText;
+		return length;
 	}
-	
+
 	//decrypts tunewiki timing values
 	function getTiming(a){var c=function(c){for(var b="",a=c.length-1;a>=0;a--)b+=c.charAt(a);return b};if(a=="")return"0";var b;a=c(a);b=parseInt(a.substring(a.length-1,a.length));a=a.substring(0,a.length-1);a=a.substring(0,b)+c(a.substring(b+b,a.length));a=parseInt(a)/b+"";if(a=="NaN")a="0";return a}
 	
-	//draws score first time song is loaded
+	//draws score  and finds linebreak first time song is loaded
+	if (this.lyricsReady){
 		this.drawScore();
+		this.findLineBreak(this.lyricLines[this.CL]);
+	}
 
 }

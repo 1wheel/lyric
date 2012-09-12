@@ -15,3 +15,10 @@ h2 {
     margin-left:20px;
     margin-top:10px;
 }
+
+textarea{
+    text-align:center;
+    font-size:200%;
+    line-height:1
+}
+
